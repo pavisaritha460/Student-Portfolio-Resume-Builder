@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Portfolio & Resume Builder</h1>
+
+        <h2>Login</h2>
+
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <input type="password" id="password" placeholder="Enter your password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p id="message"></p>
+
+        <p>
+            Don't have an account?
+            <a href="register.html">Register</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://localhost:5000/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+
+            if (response.ok) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                window.location.href = "dashboard.html";
+            }
+        });
+    </script>
+
+</body>
+</html>

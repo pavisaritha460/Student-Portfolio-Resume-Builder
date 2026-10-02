@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Skills - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Skills</h1>
+
+        <form id="skillsForm">
+
+            <input type="text" id="skillName" placeholder="Skill Name" required>
+
+            <select id="level">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+            </select>
+
+            <button type="submit">Save Skill</button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("skillsForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const skillName = document.getElementById("skillName").value;
+            const level = document.getElementById("level").value;
+
+            const response = await fetch("http://localhost:5000/api/skills", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    skillName: skillName,
+                    level: level
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+
+            if (response.ok) {
+                document.getElementById("skillsForm").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>

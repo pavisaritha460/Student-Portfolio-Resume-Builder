@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Profile</h1>
+
+        <form id="profileForm">
+
+            <input type="text" id="phone" placeholder="Phone Number" required>
+
+            <input type="text" id="location" placeholder="Location" required>
+
+            <textarea id="objective" placeholder="Career Objective" required></textarea>
+
+            <input type="text" id="photo" placeholder="Photo URL">
+
+            <button type="submit">Save Profile</button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("profileForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const phone = document.getElementById("phone").value;
+            const location = document.getElementById("location").value;
+            const objective = document.getElementById("objective").value;
+            const photo = document.getElementById("photo").value;
+
+            const response = await fetch("http://localhost:5000/api/profile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    phone: phone,
+                    location: location,
+                    objective: objective,
+                    photo: photo
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+
+            if (response.ok) {
+                document.getElementById("profileForm").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>

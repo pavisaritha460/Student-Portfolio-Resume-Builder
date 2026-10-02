@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Portfolio & Resume Builder</h1>
+
+        <h2>Welcome, <span id="studentName"></span> 👋</h2>
+
+        <p>Manage your portfolio and build your resume.</p>
+
+        <div>
+            <button onclick="openPage('profile.html')">Profile</button>
+            <button onclick="openPage('education.html')">Education</button>
+            <button onclick="openPage('skills.html')">Skills</button>
+            <button onclick="openPage('projects.html')">Projects</button>
+            <button onclick="openPage('certificates.html')">Certifications</button>
+            <button onclick="openPage('resume.html')">Build Resume</button>
+            <button onclick="openPage('portfolio.html')">View Portfolio</button>
+        </div>
+
+        <br>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("studentName").innerText = user.name;
+        }
+
+        function openPage(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        }
+    </script>
+
+</body>
+</html>

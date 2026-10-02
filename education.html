@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Education - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Education Details</h1>
+
+        <form id="educationForm">
+
+            <input type="text" id="degree" placeholder="Degree" required>
+
+            <input type="text" id="college" placeholder="College Name" required>
+
+            <input type="text" id="department" placeholder="Department">
+
+            <input type="text" id="cgpa" placeholder="CGPA">
+
+            <input type="text" id="year" placeholder="Passing Year">
+
+            <button type="submit">Save Education</button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("educationForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const degree = document.getElementById("degree").value;
+            const college = document.getElementById("college").value;
+            const department = document.getElementById("department").value;
+            const cgpa = document.getElementById("cgpa").value;
+            const year = document.getElementById("year").value;
+
+            const response = await fetch("http://localhost:5000/api/education", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    degree: degree,
+                    college: college,
+                    department: department,
+                    cgpa: cgpa,
+                    year: year
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+
+            if (response.ok) {
+                document.getElementById("educationForm").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>

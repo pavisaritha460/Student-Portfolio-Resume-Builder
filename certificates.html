@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certifications - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Certifications</h1>
+
+        <form id="certificateForm">
+
+            <input type="text" id="certificateName" placeholder="Certificate Name" required>
+
+            <input type="text" id="organization" placeholder="Organization">
+
+            <input type="text" id="certificateLink" placeholder="Certificate Link">
+
+            <button type="submit">Save Certification</button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("certificateForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const certificateName = document.getElementById("certificateName").value;
+            const organization = document.getElementById("organization").value;
+            const certificateLink = document.getElementById("certificateLink").value;
+
+            const response = await fetch("http://localhost:5000/api/certifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    certificateName: certificateName,
+                    organization: organization,
+                    certificateLink: certificateLink
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+
+            if (response.ok) {
+                document.getElementById("certificateForm").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>

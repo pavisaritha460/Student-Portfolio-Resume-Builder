@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div id="resume"></div>
+
+        <br>
+
+        <button onclick="window.print()">Download / Print Resume</button>
+
+        <br><br>
+
+        <a href="dashboard.html">Back to Dashboard</a>
+
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        }
+
+        async function loadResume() {
+            const response = await fetch("http://localhost:5000/api/resume/" + user.id);
+            const data = await response.json();
+
+            let skillsHTML = "";
+
+            data.skills.forEach(skill => {
+                skillsHTML += `
+                    <li>${skill.skillName} - ${skill.level}</li>
+                `;
+            });
+
+            let educationHTML = "";
+
+            data.education.forEach(education => {
+                educationHTML += `
+                    <p>
+                        <strong>${education.degree}</strong><br>
+                        ${education.college}<br>
+                        ${education.department}<br>
+                        CGPA: ${education.cgpa} | Year: ${education.year}
+                    </p>
+                `;
+            });
+
+            let projectsHTML = "";
+
+            data.projects.forEach(project => {
+                projectsHTML += `
+                    <p>
+                        <strong>${project.title}</strong><br>
+                        ${project.description}<br>
+                        Technologies: ${project.technologies}<br>
+                        GitHub: ${project.githubLink}
+                    </p>
+                `;
+            });
+
+            let certificationsHTML = "";
+
+            data.certifications.forEach(certificate => {
+                certificationsHTML += `
+                    <p>
+                        <strong>${certificate.certificateName}</strong><br>
+                        ${certificate.organization}<br>
+                        ${certificate.certificateLink}
+                    </p>
+                `;
+            });
+
+            document.getElementById("resume").innerHTML = `
+                <h1>${data.user.name}</h1>
+
+                <p>
+                    ${data.user.email}
+                    ${data.profile ? " | " + data.profile.phone : ""}
+                    ${data.profile ? " | " + data.profile.location : ""}
+                </p>
+
+                <hr>
+
+                <h2>Career Objective</h2>
+                <p>${data.profile ? data.profile.objective : ""}</p>
+
+                <h2>Education</h2>
+                ${educationHTML}
+
+                <h2>Skills</h2>
+                <ul>
+                    ${skillsHTML}
+                </ul>
+
+                <h2>Projects</h2>
+                ${projectsHTML}
+
+                <h2>Certifications</h2>
+                ${certificationsHTML}
+            `;
+        }
+
+        loadResume();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projects - Student Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Projects</h1>
+
+        <form id="projectsForm">
+
+            <input type="text" id="title" placeholder="Project Title" required>
+
+            <textarea id="description" placeholder="Project Description"></textarea>
+
+            <input type="text" id="technologies" placeholder="Technologies Used">
+
+            <input type="text" id="githubLink" placeholder="GitHub Link">
+
+            <button type="submit">Save Project</button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById("projectsForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+            const technologies = document.getElementById("technologies").value;
+            const githubLink = document.getElementById("githubLink").value;
+
+            const response = await fetch("http://localhost:5000/api/projects", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    title: title,
+                    description: description,
+                    technologies: technologies,
+                    githubLink: githubLink
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("message").innerText = data.message;
+
+            if (response.ok) {
+                document.getElementById("projectsForm").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>
